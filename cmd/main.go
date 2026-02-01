@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-todolist/internal/app"
+	"go-todolist/internal/infrastructure/db/sqlite"
 	"net/http"
 	"os"
 	"strconv"
@@ -10,6 +11,13 @@ import (
 
 func main() {
 	port := setupPort()
+
+	_, err := sqlite.NewTaskRepo()
+	if err != nil {
+		panic(err)
+
+	}
+
 	router := app.BuildRouter()
 	http.ListenAndServe(fmt.Sprintf(":%v", port), router)
 }
