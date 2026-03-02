@@ -12,13 +12,22 @@ import (
 func main() {
 	port := setupPort()
 
-	_, err := sqlite.NewTaskRepo()
+	db, new, err := app.BuildBD()
 	if err != nil {
 		panic(err)
-
 	}
 
-	router := app.BuildRouter()
+	taskRepo, err := sqlite.NewTaskRepo(db)
+	if err != nil {
+		panic(err)
+	}
+
+	if new {
+		taskRepo.CreateTables()
+	}
+
+	router := app.BuildRouter(taskRepo)
+
 	http.ListenAndServe(fmt.Sprintf(":%v", port), router)
 }
 
