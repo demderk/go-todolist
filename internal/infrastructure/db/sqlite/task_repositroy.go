@@ -146,7 +146,7 @@ func (r *TaskRepoDB) UpdateTask(task task.Task) error {
 		return err
 	}
 	if count == 0 {
-		return infrastructure.ErrBadArgument
+		return infrastructure.ErrIDNotFound
 	}
 
 	return nil
@@ -166,7 +166,7 @@ func (r *TaskRepoDB) DeleteTask(id int) error {
 
 	if count, err := res.RowsAffected(); err != nil {
 		if count == 0 {
-			return infrastructure.ErrBadArgument
+			return infrastructure.ErrIDNotFound
 		}
 	} else {
 		return err

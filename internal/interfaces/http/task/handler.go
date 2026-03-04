@@ -137,7 +137,7 @@ func (th *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := th.service.UpdateTask(new); err != nil {
-		if errors.Is(err, task.ErrIDNotFound) {
+		if errors.Is(err, infrastructure.ErrIDNotFound) {
 			writeJSONError(w, http.StatusBadRequest, "id not found")
 			return
 		} else {
@@ -168,7 +168,7 @@ func (th *TaskHandler) CompleteTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := th.service.CompleteTask(id); err != nil {
-		if errors.Is(err, task.ErrItemNotFound) {
+		if errors.Is(err, infrastructure.ErrItemNotFound) {
 			writeJSONError(w, http.StatusNotFound, "item not found")
 			return
 		} else {
@@ -199,7 +199,7 @@ func (th *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := th.service.DeleteTask(id); err != nil {
-		if errors.Is(err, task.ErrItemNotFound) {
+		if errors.Is(err, infrastructure.ErrItemNotFound) {
 			writeJSONError(w, http.StatusNotFound, "item not found")
 			return
 		} else {
@@ -231,7 +231,7 @@ func (th *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 
 	found, err := th.service.GetTask(id)
 	if err != nil {
-		if errors.Is(err, task.ErrItemNotFound) {
+		if errors.Is(err, infrastructure.ErrItemNotFound) {
 			writeJSONError(w, http.StatusNotFound, "item not found")
 			return
 		} else {

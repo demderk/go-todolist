@@ -16,11 +16,6 @@ type TaskService struct {
 	repo TaskRepository
 }
 
-var (
-	ErrItemNotFound = errors.New("item not found")
-	ErrIDNotFound   = errors.New("id not found")
-)
-
 func NewTaskService(repo TaskRepository) *TaskService {
 	return &TaskService{repo: repo}
 }
@@ -51,7 +46,7 @@ func (ts *TaskService) GetTask(id int) (Task, error) {
 	res, err := ts.repo.GetTask(id)
 	if err != nil {
 		if errors.Is(err, infrastructure.ErrItemNotFound) {
-			return Task{}, ErrItemNotFound
+			return Task{}, infrastructure.ErrItemNotFound
 		} else {
 			return Task{}, fmt.Errorf("database error: %w", err)
 		}
@@ -61,9 +56,6 @@ func (ts *TaskService) GetTask(id int) (Task, error) {
 
 func (ts *TaskService) UpdateTask(task Task) error {
 	if err := ts.repo.UpdateTask(task); err != nil {
-		if errors.Is(err, infrastructure.ErrBadArgument) {
-			return ErrIDNotFound
-		}
 		return fmt.Errorf("repository error: %w", err)
 	}
 	return nil
@@ -108,11 +100,7 @@ func NextDate(now time.Time, dstart string, repeat string) (time.Time, error) {
 
 func (ts *TaskService) DeleteTask(id int) error {
 	if err := ts.repo.DeleteTask(id); err != nil {
-		if errors.Is(err, infrastructure.ErrBadArgument) {
-			return ErrIDNotFound
-		} else {
-			return fmt.Errorf("repository error: %w", err)
-		}
+		return fmt.Errorf("repository error: %w", err)
 	}
 	return nil
 }
