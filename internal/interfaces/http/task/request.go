@@ -32,10 +32,10 @@ func (r *TaskRequestDTO) Validate() error {
 	return nil
 }
 
-func (r *TaskRequestDTO) ToTask() (task.Task, error) {
+func (r *TaskRequestDTO) ToTask() (*task.Task, error) {
 	date, err := time.Parse(infrastructure.TimeFormat, r.Date)
 	if err != nil {
-		return task.Task{}, fmt.Errorf("task convertion failed: %w", err)
+		return nil, fmt.Errorf("task convertion failed: %w", err)
 	}
 	var id int
 	if len(r.Id) == 0 {
@@ -43,11 +43,11 @@ func (r *TaskRequestDTO) ToTask() (task.Task, error) {
 	} else {
 		num, err := strconv.Atoi(r.Id)
 		if err != nil {
-			return task.Task{}, fmt.Errorf("failed to parse non-nil id")
+			return nil, fmt.Errorf("failed to parse non-nil id")
 		}
 		id = num
 	}
-	return task.Task{
+	return &task.Task{
 		Id:      id,
 		Date:    date,
 		Title:   r.Title,

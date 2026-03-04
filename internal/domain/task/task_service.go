@@ -24,14 +24,14 @@ func (ts *TaskService) AddTask(task Task) (int64, error) {
 	if err := setupDate(&task); err != nil {
 		return 0, fmt.Errorf("incorrect date: %w", err)
 	}
-	id, err := ts.repo.AddTask(task)
+	id, err := ts.repo.AddTask(&task)
 	if err != nil {
 		return 0, fmt.Errorf("task service error: %w", err)
 	}
 	return id, nil
 }
 
-func (ts *TaskService) GetAllTasks(limit int) ([]Task, error) {
+func (ts *TaskService) GetAllTasks(limit int) ([]*Task, error) {
 	res, err := ts.repo.GetAllTasks(limit)
 	if err != nil {
 		return nil, fmt.Errorf("repository error: %w", err)
@@ -42,19 +42,19 @@ func (ts *TaskService) GetAllTasks(limit int) ([]Task, error) {
 	return res, nil
 }
 
-func (ts *TaskService) GetTask(id int) (Task, error) {
+func (ts *TaskService) GetTask(id int) (*Task, error) {
 	res, err := ts.repo.GetTask(id)
 	if err != nil {
 		if errors.Is(err, infrastructure.ErrItemNotFound) {
-			return Task{}, infrastructure.ErrItemNotFound
+			return nil, infrastructure.ErrItemNotFound
 		} else {
-			return Task{}, fmt.Errorf("database error: %w", err)
+			return nil, fmt.Errorf("database error: %w", err)
 		}
 	}
 	return res, nil
 }
 
-func (ts *TaskService) UpdateTask(task Task) error {
+func (ts *TaskService) UpdateTask(task *Task) error {
 	if err := ts.repo.UpdateTask(task); err != nil {
 		return fmt.Errorf("repository error: %w", err)
 	}

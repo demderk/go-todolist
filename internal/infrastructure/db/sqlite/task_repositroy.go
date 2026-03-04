@@ -20,7 +20,7 @@ func NewTaskRepo(db *sql.DB) (*TaskRepoDB, error) {
 	return &TaskRepoDB{db: db}, nil
 }
 
-func (r *TaskRepoDB) AddTask(task task.Task) (int64, error) {
+func (r *TaskRepoDB) AddTask(task *task.Task) (int64, error) {
 	var id int64
 	query := `INSERT INTO scheduler (date, title, comment, repeat) VALUES (:date, :title, :comment, :repeat)`
 
@@ -39,7 +39,7 @@ func (r *TaskRepoDB) AddTask(task task.Task) (int64, error) {
 	return id, err
 }
 
-func (r *TaskRepoDB) GetAllTasks(limit int) ([]task.Task, error) {
+func (r *TaskRepoDB) GetAllTasks(limit int) ([]*task.Task, error) {
 	query := `SELECT id, date, title, comment, repeat FROM scheduler LIMIT :limit`
 
 	rows, err := r.db.Query(query, sql.Named("limit", limit))
@@ -48,17 +48,17 @@ func (r *TaskRepoDB) GetAllTasks(limit int) ([]task.Task, error) {
 	}
 	defer rows.Close()
 
-	result := make([]task.Task, 0, 50)
+	result := make([]*task.Task, 0, 50)
 
 	for rows.Next() {
-		// Тут может лучше структурой сделать?
-		var id int
-		var date string
-		var title string
-		var comment string
-		var repeat string
 
-		if err := rows.Scan(&id, &date, &title, &comment, &repeat); err != nil {
+		row := &task.Task{}
+
+		// Тут task.Date это time.Time, может есть более изящный способ это смэтчить?
+		// Делать отдельный DTO оверхед, не?...
+		var date string
+
+		if err := rows.Scan(&row.Id, &date, &row.Title, &row.Comment, &row.Repeat); err != nil {
 			return nil, fmt.Errorf("data read failed: %w", err)
 		}
 
@@ -68,13 +68,7 @@ func (r *TaskRepoDB) GetAllTasks(limit int) ([]task.Task, error) {
 			return nil, fmt.Errorf("incorrect date in database: %w", err)
 		}
 
-		row := task.Task{
-			Id:      id,
-			Date:    parsedDate,
-			Title:   title,
-			Comment: comment,
-			Repeat:  repeat,
-		}
+		row.Date = parsedDate
 
 		result = append(result, row)
 	}
@@ -86,36 +80,33 @@ func (r *TaskRepoDB) GetAllTasks(limit int) ([]task.Task, error) {
 	return result, nil
 }
 
-func (r *TaskRepoDB) GetTask(id int) (task.Task, error) {
+func (r *TaskRepoDB) GetTask(id int) (*task.Task, error) {
 	query := `SELECT date, title, comment, repeat FROM scheduler WHERE id = :id`
 
 	var date string
-	var title string
-	var comment string
-	var repeat string
 
-	err := r.db.QueryRow(query, sql.Named("id", id)).Scan(&date, &title, &comment, &repeat)
+	task := &task.Task{Id: id}
+
+	err := r.db.QueryRow(query, sql.Named("id", id)).Scan(&date, &task.Title, &task.Comment, &task.Repeat)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return task.Task{}, infrastructure.ErrItemNotFound
+			return nil, infrastructure.ErrItemNotFound
 		}
 	}
 
 	parsedDate, err := time.Parse(infrastructure.TimeFormat, date)
 
-	row := task.Task{
-		Id:      id,
-		Date:    parsedDate,
-		Title:   title,
-		Comment: comment,
-		Repeat:  repeat,
+	if err != nil {
+		return nil, fmt.Errorf("incorrect date in database: %w", err)
 	}
 
-	return row, nil
+	task.Date = parsedDate
+
+	return task, nil
 }
 
-func (r *TaskRepoDB) UpdateTask(task task.Task) error {
+func (r *TaskRepoDB) UpdateTask(task *task.Task) error {
 	query := `
 	UPDATE
 		scheduler

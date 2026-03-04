@@ -142,7 +142,7 @@ func (th *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := th.service.UpdateTask(new); err != nil {
+	if err := th.service.UpdateTask(&new); err != nil {
 		if errors.Is(err, infrastructure.ErrIDNotFound) {
 			writeJSONError(w, http.StatusBadRequest, "id not found")
 			return
@@ -248,13 +248,13 @@ func (th *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(ToTaskResponseDTO(&found))
+	json.NewEncoder(w).Encode(ToTaskResponseDTO(found))
 }
 
-func buildTasksResponse(tasks []task.Task) []TaskResponseDTO {
+func buildTasksResponse(tasks []*task.Task) []TaskResponseDTO {
 	result := make([]TaskResponseDTO, len(tasks))
 	for i, item := range tasks {
-		result[i] = ToTaskResponseDTO(&item)
+		result[i] = ToTaskResponseDTO(item)
 	}
 	return result
 }
