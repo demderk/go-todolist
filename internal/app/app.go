@@ -9,13 +9,24 @@ import (
 	router "go-todolist/internal/interfaces/http"
 )
 
+var (
+	schema = `
+	CREATE TABLE scheduler (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date CHAR(8) NOT NULL DEFAULT "",
+    title VARCHAR,
+	comment TEXT,
+	repeat VARCHAR(128))
+	`
+)
+
 func BuildRouter(repo task.TaskRepository) http.Handler {
 	taskService := task.NewTaskService(repo)
 
 	return router.NewRouter(taskService)
 }
 
-func BuildBD() (*sql.DB, bool, error) {
+func BuildBD() (*sql.DB, error) {
 	dbFile := "./data/scheduler.db"
 	_, err := os.Stat(dbFile)
 
@@ -26,7 +37,18 @@ func BuildBD() (*sql.DB, bool, error) {
 
 	db, err := sql.Open("sqlite", dbFile)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
-	return db, install, nil
+	if install {
+		createTables(db)
+	}
+
+	return db, nil
+}
+
+func createTables(db *sql.DB) error {
+	if _, err := db.Exec(schema); err != nil {
+		return err
+	}
+	return nil
 }

@@ -13,7 +13,7 @@ import (
 func main() {
 	port := setupPort()
 
-	db, new, err := app.BuildBD()
+	db, err := app.BuildBD()
 	if err != nil {
 		panic(err)
 	}
@@ -21,10 +21,6 @@ func main() {
 	taskRepo, err := sqlite.NewTaskRepo(db)
 	if err != nil {
 		panic(err)
-	}
-
-	if new {
-		taskRepo.CreateTables()
 	}
 
 	router := app.BuildRouter(taskRepo)

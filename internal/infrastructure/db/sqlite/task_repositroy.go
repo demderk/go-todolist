@@ -17,30 +17,12 @@ const (
 	timeFormat = "20060102"
 )
 
-var (
-	schema = `
-	CREATE TABLE scheduler (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date CHAR(8) NOT NULL DEFAULT "",
-    title VARCHAR,
-	comment TEXT,
-	repeat VARCHAR(128))
-	`
-)
-
 type TaskRepoDB struct {
 	db *sql.DB
 }
 
 func NewTaskRepo(db *sql.DB) (*TaskRepoDB, error) {
 	return &TaskRepoDB{db: db}, nil
-}
-
-func (t *TaskRepoDB) CreateTables() error {
-	if _, err := t.db.Exec(schema); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (r *TaskRepoDB) AddTask(task task.Task) (int64, error) {
