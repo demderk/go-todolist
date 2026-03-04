@@ -13,6 +13,10 @@ import (
 	"go-todolist/internal/infrastructure"
 )
 
+const (
+	maxTaskResponse = 50
+)
+
 type TaskHandler struct {
 	service task.TaskService
 }
@@ -95,7 +99,7 @@ func (th *TaskHandler) NextDate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *TaskHandler) GetAllTasks(w http.ResponseWriter, r *http.Request) {
-	result, err := th.service.GetAllTasks(50)
+	result, err := th.service.GetAllTasks(maxTaskResponse)
 
 	if err != nil {
 		log.Println(fmt.Errorf("handler internal error: %w", err))
