@@ -242,13 +242,13 @@ func (th *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(NewTaskResponseDTO(found))
+	json.NewEncoder(w).Encode(ToTaskResponseDTO(&found))
 }
 
 func buildTasksResponse(tasks []task.Task) []TaskResponseDTO {
 	result := make([]TaskResponseDTO, len(tasks))
 	for i, item := range tasks {
-		result[i] = NewTaskResponseDTO(item)
+		result[i] = ToTaskResponseDTO(&item)
 	}
 	return result
 }

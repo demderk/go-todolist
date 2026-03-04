@@ -15,7 +15,7 @@ type TaskResponseDTO struct {
 	Repeat  string `json:"repeat"`
 }
 
-func NewTaskResponseDTO(task task.Task) TaskResponseDTO {
+func ToTaskResponseDTO(task *task.Task) TaskResponseDTO {
 	return TaskResponseDTO{
 		Id:      strconv.Itoa(task.Id),
 		Date:    task.Date.Format(infrastructure.TimeFormat),
