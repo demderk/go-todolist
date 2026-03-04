@@ -20,11 +20,11 @@ func NewTaskService(repo TaskRepository) *TaskService {
 	return &TaskService{repo: repo}
 }
 
-func (ts *TaskService) AddTask(task Task) (int64, error) {
-	if err := setupDate(&task); err != nil {
+func (ts *TaskService) AddTask(task *Task) (int64, error) {
+	if err := setupDate(task); err != nil {
 		return 0, fmt.Errorf("incorrect date: %w", err)
 	}
-	id, err := ts.repo.AddTask(&task)
+	id, err := ts.repo.AddTask(task)
 	if err != nil {
 		return 0, fmt.Errorf("task service error: %w", err)
 	}

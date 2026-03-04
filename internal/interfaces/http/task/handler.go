@@ -142,7 +142,7 @@ func (th *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := th.service.UpdateTask(&new); err != nil {
+	if err := th.service.UpdateTask(new); err != nil {
 		if errors.Is(err, infrastructure.ErrIDNotFound) {
 			writeJSONError(w, http.StatusBadRequest, "id not found")
 			return
