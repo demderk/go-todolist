@@ -3,11 +3,12 @@ package task
 import (
 	"errors"
 	"fmt"
-	"go-todolist/internal/domain/task"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"go-todolist/internal/domain/task"
 )
 
 const (

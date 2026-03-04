@@ -1,9 +1,10 @@
 package router
 
 import (
+	"net/http"
+
 	domain "go-todolist/internal/domain/task"
 	"go-todolist/internal/interfaces/http/task"
-	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )

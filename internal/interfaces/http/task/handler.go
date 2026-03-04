@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go-todolist/internal/domain/task"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"go-todolist/internal/domain/task"
 )
 
 type TaskHandler struct {

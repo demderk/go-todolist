@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"go-todolist/internal/app"
-	"go-todolist/internal/infrastructure/db/sqlite"
 	"net/http"
 	"os"
 	"strconv"
+
+	"go-todolist/internal/app"
+	"go-todolist/internal/infrastructure/db/sqlite"
 )
 
 func main() {

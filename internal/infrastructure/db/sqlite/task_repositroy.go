@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"go-todolist/internal/domain/task"
 	"time"
+
+	"go-todolist/internal/domain/task"
 
 	infrastructure "go-todolist/internal/infrastructure/db"
 

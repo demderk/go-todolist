@@ -2,10 +2,11 @@ package app
 
 import (
 	"database/sql"
-	"go-todolist/internal/domain/task"
-	router "go-todolist/internal/interfaces/http"
 	"net/http"
 	"os"
+
+	"go-todolist/internal/domain/task"
+	router "go-todolist/internal/interfaces/http"
 )
 
 func BuildRouter(repo task.TaskRepository) http.Handler {

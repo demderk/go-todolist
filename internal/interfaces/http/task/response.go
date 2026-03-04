@@ -1,8 +1,9 @@
 package task
 
 import (
-	"go-todolist/internal/domain/task"
 	"strconv"
+
+	"go-todolist/internal/domain/task"
 )
 
 type TaskResponseDTO struct {
