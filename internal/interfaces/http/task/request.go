@@ -60,15 +60,13 @@ func validateRepeat(repeat string) bool {
 	trim := strings.TrimSpace(repeat)
 	task := strings.Split(trim, " ")
 
-	if len(task) == 1 {
-		if task[0] != "y" {
-			return false
-		}
-	} else if len(task) == 2 {
-		if task[0] != "d" {
-			return false
-		}
-	} else {
+	if len(task) != 1 && len(task) != 2 {
+		return false
+	}
+	if len(task) == 1 && task[0] != "y" {
+		return false
+	}
+	if len(task) == 2 && task[0] != "d" {
 		return false
 	}
 
