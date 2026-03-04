@@ -87,9 +87,11 @@ func (th *TaskHandler) NextDate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	send := result.Format(infrastructure.TimeFormat)
-	w.Write([]byte(send))
+	if _, err := w.Write([]byte(send)); err != nil {
+		log.Println(fmt.Errorf("failed to write response: %w", err))
+		http.Error(w, "failed to write response", http.StatusInternalServerError)
+	}
 }
 
 func (th *TaskHandler) GetAllTasks(w http.ResponseWriter, r *http.Request) {
