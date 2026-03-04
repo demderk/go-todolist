@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"go-todolist/internal/domain/task"
+	"go-todolist/internal/infrastructure"
 )
 
 type TaskResponseDTO struct {
@@ -17,7 +18,7 @@ type TaskResponseDTO struct {
 func NewTaskResponseDTO(task task.Task) TaskResponseDTO {
 	return TaskResponseDTO{
 		Id:      strconv.Itoa(task.Id),
-		Date:    task.Date.Format("20060102"),
+		Date:    task.Date.Format(infrastructure.TimeFormat),
 		Title:   task.Title,
 		Comment: task.Comment,
 		Repeat:  task.Repeat,

@@ -9,16 +9,12 @@ import (
 	"strings"
 	"time"
 
-	infrastructure "go-todolist/internal/infrastructure/db"
+	infrastructure "go-todolist/internal/infrastructure"
 )
 
 type TaskService struct {
 	repo TaskRepository
 }
-
-const (
-	timeFormat = "20060102"
-)
 
 var (
 	ErrItemNotFound = errors.New("item not found")
@@ -80,7 +76,7 @@ func NextDate(now time.Time, dstart string, repeat string) (time.Time, error) {
 
 	task := strings.Split(repeat, " ")
 
-	date, err := time.Parse("20060102", dstart)
+	date, err := time.Parse(infrastructure.TimeFormat, dstart)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("invalid start date format: %w", err)
 	}
@@ -128,7 +124,7 @@ func (ts *TaskService) CompleteTask(id int) error {
 	}
 
 	if len(task.Repeat) != 0 {
-		next, err := NextDate(time.Now(), task.Date.Format(timeFormat), task.Repeat)
+		next, err := NextDate(time.Now(), task.Date.Format(infrastructure.TimeFormat), task.Repeat)
 		if err != nil {
 			return fmt.Errorf("can't get next date: %w", err)
 		}
@@ -151,7 +147,7 @@ func setupDate(task *Task) error {
 			task.Date = now
 		} else {
 			// в противном случае, берём вычисленную ранее следующую дату
-			next, err := NextDate(now, task.Date.Format(timeFormat), task.Repeat)
+			next, err := NextDate(now, task.Date.Format(infrastructure.TimeFormat), task.Repeat)
 			if err != nil {
 				return errors.New("date setup failed")
 			}

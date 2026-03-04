@@ -9,10 +9,7 @@ import (
 	"time"
 
 	"go-todolist/internal/domain/task"
-)
-
-const (
-	timeFormat = "20060102"
+	"go-todolist/internal/infrastructure"
 )
 
 type TaskRequestDTO struct {
@@ -36,7 +33,7 @@ func (r *TaskRequestDTO) Validate() error {
 }
 
 func (r *TaskRequestDTO) ToTask() (task.Task, error) {
-	date, err := time.Parse(timeFormat, r.Date)
+	date, err := time.Parse(infrastructure.TimeFormat, r.Date)
 	if err != nil {
 		return task.Task{}, fmt.Errorf("task convertion failed: %w", err)
 	}

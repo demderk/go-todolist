@@ -7,14 +7,9 @@ import (
 	"time"
 
 	"go-todolist/internal/domain/task"
-
-	infrastructure "go-todolist/internal/infrastructure/db"
+	infrastructure "go-todolist/internal/infrastructure"
 
 	_ "modernc.org/sqlite"
-)
-
-const (
-	timeFormat = "20060102"
 )
 
 type TaskRepoDB struct {
@@ -31,7 +26,7 @@ func (r *TaskRepoDB) AddTask(task task.Task) (int64, error) {
 
 	res, err := r.db.Exec(
 		query,
-		sql.Named("date", task.Date.Format(timeFormat)),
+		sql.Named("date", task.Date.Format(infrastructure.TimeFormat)),
 		sql.Named("title", task.Title),
 		sql.Named("comment", task.Comment),
 		sql.Named("repeat", task.Repeat),
@@ -67,7 +62,7 @@ func (r *TaskRepoDB) GetAllTasks(limit int) ([]task.Task, error) {
 			return nil, fmt.Errorf("data read failed: %w", err)
 		}
 
-		parsedDate, err := time.Parse(timeFormat, date)
+		parsedDate, err := time.Parse(infrastructure.TimeFormat, date)
 
 		if err != nil {
 			return nil, fmt.Errorf("incorrect date in database: %w", err)
@@ -107,7 +102,7 @@ func (r *TaskRepoDB) GetTask(id int) (task.Task, error) {
 		}
 	}
 
-	parsedDate, err := time.Parse(timeFormat, date)
+	parsedDate, err := time.Parse(infrastructure.TimeFormat, date)
 
 	row := task.Task{
 		Id:      id,
@@ -136,7 +131,7 @@ func (r *TaskRepoDB) UpdateTask(task task.Task) error {
 	res, err := r.db.Exec(
 		query,
 		sql.Named("id", task.Id),
-		sql.Named("date", task.Date.Format(timeFormat)),
+		sql.Named("date", task.Date.Format(infrastructure.TimeFormat)),
 		sql.Named("title", task.Title),
 		sql.Named("comment", task.Comment),
 		sql.Named("repeat", task.Repeat),

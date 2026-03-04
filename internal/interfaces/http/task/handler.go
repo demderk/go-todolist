@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"go-todolist/internal/domain/task"
+	"go-todolist/internal/infrastructure"
 )
 
 type TaskHandler struct {
@@ -34,7 +35,7 @@ func (th *TaskHandler) AddTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(req.Date) == 0 {
-		req.Date = time.Now().Format("20060102")
+		req.Date = time.Now().Format(infrastructure.TimeFormat)
 	}
 
 	task, err := req.ToTask()
@@ -68,15 +69,13 @@ func (th *TaskHandler) AddTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *TaskHandler) NextDate(w http.ResponseWriter, r *http.Request) {
-	format := "20060102"
-
 	querry := r.URL.Query()
 
 	now := querry.Get("now")
 	date := querry.Get("date")
 	repeat := querry.Get("repeat")
 
-	nowTime, err := time.Parse(format, now)
+	nowTime, err := time.Parse(infrastructure.TimeFormat, now)
 	if err != nil {
 		writeJSONError(w, http.StatusBadRequest, "incorrect date format")
 		return
@@ -89,7 +88,7 @@ func (th *TaskHandler) NextDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	send := result.Format(timeFormat)
+	send := result.Format(infrastructure.TimeFormat)
 	w.Write([]byte(send))
 }
 
@@ -126,7 +125,7 @@ func (th *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(req.Date) == 0 {
-		req.Date = time.Now().Format("20060102")
+		req.Date = time.Now().Format(infrastructure.TimeFormat)
 	}
 
 	new, err := req.ToTask()
