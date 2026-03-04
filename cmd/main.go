@@ -17,6 +17,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 
 	taskRepo, err := sqlite.NewTaskRepo(db)
 	if err != nil {
