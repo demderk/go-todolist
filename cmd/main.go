@@ -33,12 +33,8 @@ func setupPort() int {
 	startupPort := os.Getenv("TODO_PORT")
 	port := 7540
 	if startupPort != "" {
-		port, err := strconv.Atoi(os.Getenv("TODO_PORT"))
+		_, err := strconv.Atoi(os.Getenv("TODO_PORT"))
 		if err != nil {
-			fmt.Println("invalid port, app port was set to DEFAULT (7540)")
-			port = 7540
-		}
-		if port < 0 || port > 65535 {
 			fmt.Println("invalid port, app port was set to DEFAULT (7540)")
 			port = 7540
 		}
