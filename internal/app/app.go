@@ -40,7 +40,10 @@ func BuildBD() (*sql.DB, error) {
 		return nil, err
 	}
 	if install {
-		createTables(db)
+		if err := createTables(db); err != nil {
+			return nil, err
+			db.Close()
+		}
 	}
 
 	return db, nil

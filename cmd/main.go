@@ -26,7 +26,9 @@ func main() {
 
 	router := app.BuildRouter(taskRepo)
 
-	http.ListenAndServe(fmt.Sprintf(":%v", port), router)
+	if err := http.ListenAndServe(fmt.Sprintf(":%v", port), router); err != nil {
+		panic(err)
+	}
 }
 
 func setupPort() int {
