@@ -32,6 +32,10 @@ func BuildBD() (*sql.DB, error) {
 
 	install := false
 	if err != nil {
+		err := os.MkdirAll("data", 0755)
+		if err != nil {
+			return nil, err
+		}
 		install = true
 	}
 
